@@ -1,0 +1,74 @@
+
+<div class="flex flex-col h-full">
+  <h2 class="text-2xl font-bold text-gray-900 mb-6">Study Design Wizard</h2>
+  <nav class="flex flex-col space-y-2">
+    @for (step of steps; track step.id; let i = $index) {
+      <div 
+        (click)="selectStep(i)"
+        class="p-4 rounded-lg cursor-pointer transition-all duration-200"
+        [class.bg-blue-100]="i === activeStepIndex()"
+        [class.border-blue-500]="i === activeStepIndex()"
+        [class.border-transparent]="i !== activeStepIndex()"
+        [class.hover:bg-gray-100]="i !== activeStepIndex()"
+        [class.border]="true">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full"
+            [class.bg-blue-600]="i <= activeStepIndex()"
+            [class.text-white]="i <= activeStepIndex()"
+            [class.bg-gray-300]="i > activeStepIndex()"
+            [class.text-gray-600]="i > activeStepIndex()">
+            @if (isStepCompleted(i)) {
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+            } @else {
+              <span>{{ i + 1 }}</span>
+            }
+          </div>
+          <div class="ml-4">
+            <h3 class="text-md font-semibold text-gray-800">{{ step.title }}</h3>
+          </div>
+        </div>
+      </div>
+    }
+  </nav>
+
+  <div class="mt-8 flex-1 flex flex-col">
+    @if (steps[activeStepIndex()]; as activeStep) {
+      <div class="bg-gray-50 p-4 rounded-md border border-gray-200 flex-1 flex flex-col">
+        <h4 class="font-semibold text-lg text-gray-900">{{ activeStep.title }}</h4>
+        <p class="text-sm text-gray-600 mt-1 mb-4">{{ activeStep.description }}</p>
+        
+        @if (activeStep.id === 'abstract') {
+          <textarea 
+            class="w-full flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            [placeholder]="activeStep.placeholder"
+            [(ngModel)]="userInput">
+          </textarea>
+        } @else {
+          <div class="w-full flex-1 p-3 border border-dashed border-gray-300 rounded-md bg-white text-gray-500 text-sm">
+            {{ activeStep.placeholder }}
+          </div>
+        }
+
+        <button 
+          (click)="onGenerateClick()" 
+          [disabled]="isLoading() || (activeStep.id === 'abstract' && !userInput())"
+          class="mt-4 w-full flex items-center justify-center bg-blue-600 text-white px-4 py-2.5 rounded-md hover:bg-blue-700 transition-colors shadow disabled:bg-gray-400 disabled:cursor-not-allowed">
+          @if (isLoading()) {
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>Generating...</span>
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z" />
+            </svg>
+            <span>Generate Section</span>
+          }
+        </button>
+      </div>
+    }
+  </div>
+</div>

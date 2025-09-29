@@ -1,0 +1,5 @@
+{
+  "name": "AI Grant Study Designer",
+  "description": "A collaborative, document-style application that uses AI to design and write scientific studies for grant applications, guiding users through hypothesis generation, methodology design, and data simulation.",
+  "requestFramePermissions": []
+}
