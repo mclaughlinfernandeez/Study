@@ -1,4 +1,3 @@
-
 <header class="bg-gray-50 border-b border-gray-300 px-4 py-2 shadow-sm">
   <div class="flex items-center justify-between">
     <div class="flex items-center space-x-4">
@@ -29,6 +28,28 @@
         </svg>
         Share
       </button>
+
+      <button (click)="save.emit()" class="flex items-center bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors shadow">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M17 3H5a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V7l-4-4zm-5 1a1 1 0 011 1v3a1 1 0 01-2 0V5a1 1 0 011-1zm3 10H7a1 1 0 01-1-1v-2a1 1 0 011-1h6a1 1 0 011 1v2a1 1 0 01-1 1z" />
+        </svg>
+        Save Study
+      </button>
+
+      <button (click)="load.emit()" class="flex items-center bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors shadow">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+        </svg>
+        Load Study
+      </button>
+
+      <button (click)="export.emit()" class="flex items-center bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors shadow">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+        Export Study
+      </button>
+
       <img class="w-8 h-8 rounded-full" src="https://picsum.photos/100/100" alt="User avatar">
     </div>
   </div>

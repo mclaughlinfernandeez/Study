@@ -1,5 +1,4 @@
-
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -8,4 +7,8 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule],
 })
-export class ToolbarComponent {}
+export class ToolbarComponent {
+  save = output<void>();
+  load = output<void>();
+  export = output<void>();
+}

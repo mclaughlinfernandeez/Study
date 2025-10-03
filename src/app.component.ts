@@ -1,4 +1,3 @@
-
 import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent, Step } from './components/sidebar/sidebar.component';
@@ -19,14 +18,20 @@ interface StudySection {
 })
 export class AppComponent {
   private geminiService = new GeminiService();
-  
+  private readonly storageKey = 'aiGrantStudyDesigner_study';
+
   readonly studySections = signal<StudySection[]>([]);
   readonly isLoading = signal(false);
   readonly error = signal<string | null>(null);
+  readonly successMessage = signal<string | null>(null);
 
   readonly fullDocument = computed(() => {
     return this.studySections().map(section => `## ${section.title}\n\n${section.content}`).join('\n\n---\n\n');
   });
+
+  constructor() {
+    this.loadStudy();
+  }
 
   async onGenerate(event: { step: Step, context: string, previousContent: string }) {
     this.isLoading.set(true);
@@ -51,6 +56,76 @@ export class AppComponent {
       this.error.set('Failed to generate content. Please check your connection and API key.');
     } finally {
       this.isLoading.set(false);
+    }
+  }
+
+  onSaveStudy(): void {
+    try {
+      const studyData = JSON.stringify(this.studySections());
+      localStorage.setItem(this.storageKey, studyData);
+      this.showSuccessMessage('Study saved successfully!');
+    } catch (e) {
+      console.error('Failed to save study to localStorage', e);
+      this.error.set('Failed to save the study. Your browser might not support local storage or it is full.');
+    }
+  }
+
+  onLoadStudy(): void {
+    this.loadStudy(true);
+  }
+
+  onExportStudy(): void {
+    const content = this.fullDocument();
+    if (!content.trim()) {
+      this.showSuccessMessage('Document is empty. Nothing to export.');
+      return;
+    }
+
+    try {
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'ai-study-design.txt');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      this.showSuccessMessage('Study exported as a .txt file!');
+    } catch (e) {
+      console.error('Failed to export study', e);
+      this.error.set('Failed to export the study. Your browser might not support this feature.');
+    }
+  }
+
+  private showSuccessMessage(message: string): void {
+    this.successMessage.set(message);
+    setTimeout(() => this.successMessage.set(null), 3000);
+  }
+
+  private loadStudy(isUserAction = false): void {
+    try {
+      const savedStudy = localStorage.getItem(this.storageKey);
+      if (savedStudy) {
+        const parsedStudy: StudySection[] = JSON.parse(savedStudy);
+        if (Array.isArray(parsedStudy) && parsedStudy.every(s => 'title' in s && 'content' in s)) {
+          this.studySections.set(parsedStudy);
+          if (isUserAction) {
+            this.showSuccessMessage('Study loaded successfully!');
+          }
+          console.log('Study loaded successfully!');
+        } else {
+            console.warn('Invalid study data found in localStorage. Data was ignored.');
+        }
+      } else {
+        if (isUserAction) {
+          this.showSuccessMessage('No saved study found.');
+        }
+        console.log('No saved study found in localStorage.');
+      }
+    } catch (e) {
+      console.error('Failed to load study from localStorage', e);
+      this.error.set('Failed to load the study. The saved data might be corrupted.');
     }
   }
 

@@ -1,6 +1,5 @@
-
 <div class="flex flex-col h-screen w-screen bg-gray-200">
-  <app-toolbar></app-toolbar>
+  <app-toolbar (save)="onSaveStudy()" (load)="onLoadStudy()" (export)="onExportStudy()"></app-toolbar>
   <div class="flex flex-1 overflow-hidden">
     <app-sidebar 
       class="w-1/3 max-w-md overflow-y-auto bg-white shadow-lg p-6"
@@ -18,4 +17,10 @@
       </div>
     </main>
   </div>
+
+  @if (successMessage(); as message) {
+    <div class="fixed bottom-5 right-5 bg-green-600 text-white py-3 px-6 rounded-lg shadow-xl z-50 animate-fade-in-out">
+      <p>{{ message }}</p>
+    </div>
+  }
 </div>
